@@ -1,4 +1,4 @@
-blender-lsystem-plugin
+blender-lsystem-addon
 ======================
 
-Blender plugin for generating meshes with L-system
+Blender addon for generating meshes with L-system
