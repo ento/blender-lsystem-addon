@@ -69,11 +69,28 @@ class OBJECT_OT_add_lsystem(Operator):
 	
 	start = StringProperty(name='start')
 	
-	angle = FloatProperty(
-		name		= 'angle',
+	radius = FloatProperty(
+		name		= 'radius',
+		default		= 0.2,
+		description	= "radius" )
+
+	pitch_angle = FloatProperty(
+		name		= 'pitch_angle',
 		default		= radians(30),
 		subtype		= 'ANGLE',
-		description	= "size in degrees of angle operators" )
+		description	= "size in degrees of pitch operators: +-" )
+	
+	yaw_angle = FloatProperty(
+		name		= 'yaw_angle',
+		default		= radians(30),
+		subtype		= 'ANGLE',
+		description	= "size in degrees of yaw operators: /\\" )
+	
+	roll_angle = FloatProperty(
+		name		= 'roll_angle',
+		default		= radians(30),
+		subtype		= 'ANGLE',
+		description	= "size in degrees of roll operators: <>" )
 	
 	tropism = FloatVectorProperty(
 		name		= 'tropism',
@@ -111,7 +128,10 @@ class OBJECT_OT_add_lsystem(Operator):
 		self.radii = []
 		t = Turtle(	self.tropism,
 					self.tropismsize,
-					self.angle,
+					self.pitch_angle,
+					self.yaw_angle,
+					self.roll_angle,
+					self.radius,
 					self.seed )
 		for e in t.interpret(s):
 			if isinstance(e,Edge):
@@ -206,7 +226,10 @@ class OBJECT_OT_add_lsystem(Operator):
 		box.label(text="Interpretation section")
 		box.prop(self,'niterations')
 		box.prop(self,'seed')
-		box.prop(self,'angle')
+		box.prop(self,'radius')
+		box.prop(self,'pitch_angle')
+		box.prop(self,'yaw_angle')
+		box.prop(self,'roll_angle')
 		box.prop(self,'tropism')
 		box.prop(self,'tropismsize')
 		

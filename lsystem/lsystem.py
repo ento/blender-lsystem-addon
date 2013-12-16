@@ -16,7 +16,10 @@ class Turtle:
 	def __init__(	self,
 					tropism=(0,0,0),
 					tropismsize=0,
-					angle=radians(30),
+					pitch_angle=radians(30),
+					yaw_angle=radians(30),
+					roll_angle=radians(30),
+					radius=0.2,
 					iseed=42 ):
 		self.tropism = Vector(tropism).normalized()
 		self.magnitude = tropismsize
@@ -24,9 +27,12 @@ class Turtle:
 		self.up = Vector((0,0,1))
 		self.right = self.forward.cross(self.up)
 		self.stack = []
+		self.stack_curly = []
 		self.position = Vector((0,0,0))
-		self.angle = angle
-		self.radius = 0.1
+		self.pitch_angle = pitch_angle
+		self.yaw_angle = yaw_angle
+		self.roll_angle = roll_angle
+		self.radius = radius
 		self.__init_terminals()
 		seed(iseed)
 		
@@ -39,6 +45,8 @@ class Turtle:
 			'-': self.term_minus,
 			'[': self.term_push,
 			']': self.term_pop,
+			'(': self.term_push_curly,
+			')': self.term_pop_curly,
 			'/': self.term_slash,
 			'\\': self.term_backslash,
 			'<': self.term_less,
@@ -48,6 +56,10 @@ class Turtle:
 			'@': self.term_shrink,
 			'#': self.term_fatten,
 			'%': self.term_slink,
+			'^': self.term_expand_g,
+			'*': self.term_shrink_g,
+			'=': self.term_fatten_g,
+			'|': self.term_slink_g,
 			'F': self.term_edge,
 			'Q': self.term_quad,
 			# '{': self.term_object
@@ -64,13 +76,13 @@ class Turtle:
 		self.right.rotate(q)
 		
 	def term_plus(self, value=None):
-		val = radians(value) if not value is None else self.angle
+		val = radians(value) if not value is None else self.pitch_angle
 		r = Matrix.Rotation(val, 4, self.right)
 		self.forward.rotate(r)
 		self.up.rotate(r)
 		
 	def term_minus(self, value=None):
-		val = radians(value) if not value is None else self.angle
+		val = radians(value) if not value is None else self.pitch_angle
 		r = Matrix.Rotation(-val, 4, self.right)
 		self.forward.rotate(r)
 		self.up.rotate(r)
@@ -83,25 +95,25 @@ class Turtle:
 		
 	def term_slash(self, value=None):
 		r = Matrix.Rotation(radians(value) if not value is None
-							else self.angle, 4, self.up)
+							else self.yaw_angle, 4, self.up)
 		self.forward.rotate(r)
 		self.right.rotate(r)
 		
 	def term_backslash(self, value=None):
 		r = Matrix.Rotation(-radians(value) if not value is None
-							else -self.angle, 4, self.up)
+							else -self.yaw_angle, 4, self.up)
 		self.forward.rotate(r)
 		self.right.rotate(r)
 		
 	def term_less(self, value=None):
 		r = Matrix.Rotation(radians(value) if not value is None
-							else self.angle, 4, self.forward)
+							else self.roll_angle, 4, self.forward)
 		self.up.rotate(r)
 		self.right.rotate(r)
 		
 	def term_greater(self, value=None):
 		r = Matrix.Rotation(-radians(value) if not value is None
-							else -self.angle, 4, self.forward)
+							else -self.roll_angle, 4, self.forward)
 		self.up.rotate(r)
 		self.right.rotate(r)
 		
@@ -121,6 +133,22 @@ class Turtle:
 				self.radius )
 		self.stack.append(t)
 	
+	def term_pop_curly(self, value=None):
+		t = self.stack_curly.pop()
+		(	self.forward,
+			self.up,
+			self.right,
+			self.position,
+			self.radius ) = t
+		
+	def term_push_curly(self, value=None):
+		t = (	self.forward.copy(),
+				self.up.copy(),
+				self.right.copy(),
+				self.position.copy(),
+				self.radius )
+		self.stack_curly.append(t)
+	
 	def term_expand(self, value=1.1):
 		self.forward *= value
 		self.up *= value
@@ -131,11 +159,23 @@ class Turtle:
 		self.up *= value
 		self.right *= value
 		
-	def term_fatten(self, value=1.1):
+	def term_fatten(self, value=1+0.045):
 		self.radius *= value
 		
-	def term_slink(self, value=0.9):
+	def term_slink(self, value=1-0.045):
 		self.radius *= value
+		
+	def term_expand_g(self, value=1.1):
+		self.term_expand(1+0.48)
+		
+	def term_shrink_g(self, value=1-0.48):
+		self.term_shrink(value)
+		
+	def term_fatten_g(self, value=1+0.48):
+		self.term_fatten(value)
+		
+	def term_slink_g(self, value=1-0.48):
+		self.term_slink(value)
 		
 	def term_edge(self, value=None):
 		s = self.position.copy()
