@@ -173,7 +173,7 @@ class Turtle(object):
         self.radius *= value
 
     def term_expand_g(self, value=1 + expand_shrink_factor_g):
-        self.term_expand(1 + 0.48)
+        self.term_expand(value)
 
     def term_shrink_g(self, value=1 - expand_shrink_factor_g):
         self.term_shrink(value)
