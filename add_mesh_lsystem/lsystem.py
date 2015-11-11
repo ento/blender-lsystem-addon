@@ -144,11 +144,11 @@ class Turtle(object):
          self.radius) = t
 
     def term_push_curly(self, value=None):
-        t = (elf.forward.copy(),
-             elf.up.copy(),
-             elf.right.copy(),
-             elf.position.copy(),
-             elf.radius)
+        t = (self.forward.copy(),
+             self.up.copy(),
+             self.right.copy(),
+             self.position.copy(),
+             self.radius)
         self.stack_curly.append(t)
 
     expand_shrink_factor = 0.1
