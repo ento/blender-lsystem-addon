@@ -243,7 +243,7 @@ class OBJECT_OT_add_lsystem(Operator):
 def add_object_button(self, context):
     self.layout.operator(
         OBJECT_OT_add_lsystem.bl_idname,
-        text="Add Lsystem",
+        text="Lsystem",
         icon='PLUGIN')
 
 
